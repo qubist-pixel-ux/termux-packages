@@ -7,27 +7,26 @@ TERMUX_PKG_SRCURL=https://sourceforge.net/projects/xmlrpc-c/files/Xmlrpc-c%20Sup
 TERMUX_PKG_SHA256=06dcd87d9c88374559369ffbe83b3139cf41418c1a2d03f20e08808085f89fd0
 TERMUX_PKG_BUILD_DEPENDS="libtool, pkg-config, openssl"
 TERMUX_PKG_DEPENDS="curl"
-TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
---prefix=$PREFIX
---mandir=$PREFIX/share/man
---disable-libxml2-backend
---disable-cgi-server
---disable-libwww-client
---disable-wininet-client
---enable-cplusplus
---host=${TERMUX_HOST_PLATFORM}
-"
 
-termux_step_pre_configure() {
- 	if [ $TERMUX_ARCH = "arm" ]; then
-    TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="--build=armv7l-unknown-linux-gnueabi"
-	elif [ $TERMUX_ARCH = "i686" ]; then
-    TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="--build=i686-unknown-linux-gnu"
-	elif [ $TERMUX_ARCH = "x86_64" ]; then
-    TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="--build=x86_64-unknown-linux-gnu"
-	elif [ $TERMUX_ARCH = "aarch64" ]; then
-    TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="--build=arm64-unknown-linux-gnueabi"
-	else
-		termux_error_exit "Unsupported arch: $TERMUX_ARCH"
-	fi
+termux_step_configure() {
+	local ARCH
+	# Copy cross_config for target architecture.
+	case $TERMUX_ARCH in
+		aarch64) ARCH=arm64-unknown-linux-gnueabi ;;
+		arm)     ARCH=armv7l-unknown-linux-gnueabi;;
+		i686)    ARCH=i686-unknown-linux-gnu;;
+		x86_64)  ARCH=x86_64-unknown-linux-gnu;;
+		*)       termux_error_exit "Unsupported arch: $TERMUX_ARCH" ;;
+	esac
+	
+	$TERMUX_PKG_SRCDIR/configure \
+	--prefix=$PREFIX \
+	--mandir=$PREFIX/share/man \
+	--disable-libxml2-backend \
+	--disable-cgi-server \
+	--disable-libwww-client \
+	--disable-wininet-client \
+	--enable-cplusplus \
+	--host=${TERMUX_HOST_PLATFORM} \
+	--build=${ARCH}
 }
