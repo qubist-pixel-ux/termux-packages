@@ -15,6 +15,7 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --disable-libwww-client
 --disable-wininet-client
 --enable-cplusplus
+--host=${TERMUX_HOST_PLATFORM}
 "
 
 termux_step_pre_configure() {
