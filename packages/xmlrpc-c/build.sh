@@ -12,10 +12,10 @@ termux_step_configure() {
 	local ARCH
 	# Copy cross_config for target architecture.
 	case $TERMUX_ARCH in
-		aarch64) ARCH=arm64-unknown-linux-gnueabi ;;
-		arm)     ARCH=armv7l-unknown-linux-gnueabi;;
-		i686)    ARCH=i686-unknown-linux-gnu;;
-		x86_64)  ARCH=x86_64-unknown-linux-gnu;;
+		aarch64) ARCH=arm64 ;;
+		arm)     ARCH=armv7l;;
+		i686)    ARCH=i686;;
+		x86_64)  ARCH=x86_64;;
 		*)       termux_error_exit "Unsupported arch: $TERMUX_ARCH" ;;
 	esac
 	
